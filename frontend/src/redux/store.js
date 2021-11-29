@@ -1,8 +1,16 @@
+// Third party
 import { configureStore } from '@reduxjs/toolkit';
 
+// Custom
+import postsReducer from './postsSlice'
+import themeReducer from './themeSlice'
 
-export const store = configureStore({
+const store = configureStore({
   reducer: {
-    
+    theme: themeReducer,
+    posts: postsReducer
   },
 });
+
+
+export default store

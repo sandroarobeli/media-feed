@@ -1,6 +1,7 @@
 // Third party
 import React from 'react';
 import { Routes, Route } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline'
 
@@ -13,6 +14,7 @@ import EditPostForm from './features/posts/EditPostForm'
 import UsersList from './features/users/UsersList'
 import UserPage from './features/users/UserPage'
 import PageNotFound from './features/shared/PageNotFound'
+import { selectTheme } from './redux/themeSlice'
 
 // Custom theme module. Override default colors, breakpoints etc. to match customer' requirements
 const themeLight = createTheme({
@@ -24,6 +26,9 @@ const themeLight = createTheme({
     }
   },
   palette: {
+    secondary: {
+      main: "#ec13c9"
+    },
     background: {
       default: "#d1f4f9",
       paper: "#d1f4f9"
@@ -40,14 +45,28 @@ const themeDark = createTheme({
     }
   },
   palette: {
-    mode: 'dark',
-  },
+    primary: {
+      main: "#0d0356"
+    },
+    divider: "#2e11bc",
+    background: {
+      default: "#160d3d",
+      paper: "#160d3d",
+    },
+    text: {
+      primary: '#fff',
+      secondary: "#darkgray",
+    },
+  }
 })
 
 
 const App = (props) => {
+  // From Redux
+  const currentTheme = useSelector(selectTheme)
+
   return (
-    <ThemeProvider theme={themeLight}>
+    <ThemeProvider theme={currentTheme ? themeLight : themeDark}>
       <CssBaseline /> 
       <Routes>
         <Route path='/' element={<NavBar />}>
@@ -66,6 +85,7 @@ const App = (props) => {
           <Route path="users/view/:userId" element={<UserPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
+        <Route path="*" element={<PageNotFound />}/>
       </Routes>
     </ThemeProvider>
   );
