@@ -1,7 +1,7 @@
 // Third party
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -11,13 +11,21 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography'
 
 // Custom
-import { selectAllPosts } from '../../redux/postsSlice'
+import { selectAllPosts, postDeleted } from '../../redux/postsSlice'
+import PostAuthor from './PostAuthor';
+import TimeAgo from './TimeAgo'
+import ReactionButtons from './ReactionButtons';
 
 const PostsList = () => {
     // From Redux
     const posts = useSelector(selectAllPosts)
+    const dispatch = useDispatch()
 
-    const renderedPosts = posts.map((post) => (
+    // Sort posts in reverse chronological order by datetime string
+    const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
+
+    
+    const renderedPosts = orderedPosts.map((post) => (
         <Box
             key={post.id}
             sx={{
@@ -38,6 +46,9 @@ const PostsList = () => {
                     <Typography variant="h5" component="h3">
                         {post.title}
                     </Typography>
+                    <PostAuthor userId={post.user} />
+                    <TimeAgo timestamp={post.date} />
+                    <ReactionButtons post={post}/>
                     <Typography variant="body1" component='p' sx={{marginTop: "0.75rem"}}>
                         {post.content.substring(0, 100)}
                     </Typography>
@@ -79,7 +90,7 @@ const PostsList = () => {
                         <Button
                             variant='contained'
                             color='error'
-                            onClick=''   //'deletePost()'
+                            onClick={() => dispatch(postDeleted({ postId: post.id }))}  
                             sx={{
                                 "&:hover": {
                                     background: "#ec13c9"
@@ -101,10 +112,8 @@ const PostsList = () => {
         <Box
             component="section"
             style={{
-                marginTop: "1rem",
+                margin: "1rem auto 3rem auto",
                 maxWidth: "800px",
-                marginLeft: "auto",
-                marginRight: "auto",
                 padding: "0 1.5rem"
             }}
         >

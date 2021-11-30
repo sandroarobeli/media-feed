@@ -6,20 +6,28 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl'; 
+
 
 // Custom
 import { selectTheme } from '../../redux/themeSlice'
 import { selectAllPosts, postAdded } from '../../redux/postsSlice'
+import { selectAllUsers } from '../../redux/usersSlice'
 
 const AddPostForm = () => {
     // From Redux
     const currentTheme = useSelector(selectTheme)
-    const allPosts = useSelector(selectAllPosts)
+    const allUsers = useSelector(selectAllUsers)
+   // const allPosts = useSelector(selectAllPosts)
     const dispatch = useDispatch()
 
     // Local state
     const [title, setTitle] = useState("")
     const [content, setContent] = useState("")
+    const [userId, setUserId] = useState("")
 
     // Handler functions
     const onTitleChanged = (event) => {
@@ -28,21 +36,38 @@ const AddPostForm = () => {
     const onContentChanged = (event) => {
         setContent(event.target.value)
     }
+    const onAuthorChanged = (event) => {
+        setUserId(event.target.value)
+    }
     const onSavePostClicked = () => {
         if (title && content) {
             dispatch(postAdded({
                 id: new Date().toISOString(),
                 title,
-                content
+                content,
+                user: userId,
+                date: new Date().toISOString(),
+                reactions: {thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 }
             }))
         }
         setTitle("")
         setContent("")
+        setUserId("")
     }
+
+    // map of allUsers to populate select dropdown menu options
+    const usersOptions = allUsers.map((user) => (
+        <MenuItem key={user.id} value={user.id}>
+            {user.name}
+        </MenuItem>
+    ))
+
+    // Disables submit button if false 
+    const canSave = Boolean(title) && Boolean(userId)
 
     return (
         <Box
-            component="section"
+            component='section'
             style={{
                 marginTop: "1rem",
                 maxWidth: "800px",
@@ -57,7 +82,7 @@ const AddPostForm = () => {
                     <TextField
                         name='postTitle'
                         id='postTitle'
-                        label='Post Title'
+                        label={currentTheme ? 'Post Title' : ""}
                         placeholder='Post Title'
                         type='text'
                         required
@@ -70,10 +95,27 @@ const AddPostForm = () => {
                             borderRadius: currentTheme ? "none" : "7px",
                         }}
                     />
+                    <FormControl>
+                        <InputLabel id='authorLabel'>Select Author</InputLabel>
+                        <Select
+                            labelId='authorLabel'
+                            id="postAuthor"
+                            value={userId}
+                            onChange={onAuthorChanged}
+                            sx={{
+                                marginTop: "0.5rem",
+                                
+                                border: currentTheme? "none" : "1px solid gray",
+                                borderRadius: currentTheme ? "none" : "7px",
+                            }}
+                        >
+                            {usersOptions}
+                        </Select>
+                    </FormControl>
                     <TextField
                         name='postContent'
                         id='postContent'
-                        label='Content'
+                        label={currentTheme ? 'Content' : ""}
                         placeholder='Post Content'
                         multiline
                         required
@@ -92,6 +134,7 @@ const AddPostForm = () => {
                         type='button'
                         variant="contained"
                         onClick={onSavePostClicked}
+                        disabled={!canSave}
                         sx={{
                             "&:hover": {
                                 background: "#ec13c9"

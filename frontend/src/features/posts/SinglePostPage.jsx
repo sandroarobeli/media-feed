@@ -1,7 +1,7 @@
 // Third party
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { useParams, Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
@@ -10,11 +10,24 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button';
 
+// Custom
+import PostAuthor from './PostAuthor';
+import TimeAgo from './TimeAgo'
+import ReactionButtons from './ReactionButtons';
+import { postDeleted } from '../../redux/postsSlice';
+
 const SinglePostPage = () => {
     const postId = useParams().postId
+    const navigate = useNavigate()
     
     // From Redux
     const post = useSelector((state) => state.posts.find((post) => post.id === postId))
+    const dispatch = useDispatch()
+
+    const onPostDeleted = () => {
+        dispatch(postDeleted({ postId: postId }))
+        navigate('/')
+    }
         
     if (!post) {
         return (
@@ -96,6 +109,9 @@ const SinglePostPage = () => {
                     <Typography variant="h4" component="h2">
                         {post.title}
                     </Typography>
+                    <PostAuthor userId={post.user} />
+                    <TimeAgo timestamp={post.date} />
+                    <ReactionButtons post={post} />
                     <Typography variant="body1" component='p' sx={{marginTop: "0.75rem"}}>
                         {post.content}
                     </Typography>
@@ -121,7 +137,7 @@ const SinglePostPage = () => {
                         <Button
                             variant='contained'
                             color='error'
-                            onClick=''   //'deletePost()'
+                            onClick={onPostDeleted}  
                             sx={{
                                 "&:hover": {
                                     background: "#ec13c9"
