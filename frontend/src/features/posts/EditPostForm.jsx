@@ -1,6 +1,6 @@
 // Third party
 import React, { useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
@@ -42,11 +42,11 @@ const EditPostForm = () => {
     const onSavePostClicked = () => {
         if (title && content) {
             dispatch(postUpdated({
-                id: postId,
+                postId: postId,
                 title,
                 content
             }))
-            navigate(`/posts/view/${postId}`)
+            navigate(`/posts/view/${postId}`) 
         }
         
     }
