@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-// Dummy Data // delete
+// Dummy Data 
+// In real application, user ID is created when user signs up and when post is saved, userId 
+// gets attached to is as per creator. Thus no need for Select/dropdown  
 const initialState = [
     { id: 'u0', name: 'Katie Towson' },
     { id: 'u1', name: 'Lily Peterson' },
