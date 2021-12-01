@@ -1,6 +1,6 @@
 // Third party
 import React, { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
@@ -27,10 +27,10 @@ const EditPostForm = () => {
 
     const existingPost = allPosts.find((post) => post.id === postId)
     
-    
     // Local state initialized with existing post title & content
-    const [title, setTitle] = useState(existingPost.title)
-    const [content, setContent] = useState(existingPost.content)
+    // In case Post returns undefined, app doesn't crash and displays post not found page with back button
+    const [title, setTitle] = useState(!existingPost ? " " : existingPost.title)
+    const [content, setContent] = useState(!existingPost ? " " : existingPost.content)
 
     // Handler functions
     const onTitleChanged = (event) => {
@@ -51,6 +51,60 @@ const EditPostForm = () => {
         
     }
 
+    if (!existingPost) {
+        return (
+            <Box
+                component='section'
+                sx={{
+                    minWidth: "275px",
+                    marginTop: "1rem",
+                    maxWidth: "800px",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    padding: "0 1.5rem"
+                }}
+            >
+                <Card
+                    variant="outlined"
+                    sx={{
+                        marginTop: "0.5rem",
+                        padding: "0.25rem 0.25rem",
+                        border: "1px solid grey",
+                        borderRadius: "7px",
+                        margin: "auto",
+                        textAlign: "center"
+                    }}
+                >
+                    <CardContent>
+                        <Typography variant="h5" component="h3">
+                            Post not found!
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button
+                            variant='contained'
+                            color='primary'
+                            component={Link}
+                            to={`/`}
+                            sx={{
+                                margin: "auto",
+                                "&:hover": {
+                                background: "#ec13c9"
+                                },
+                                "&:active": {
+                                background: "#ec13c9"
+                                }
+                            }}
+                        >
+                            Back
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Box>
+                
+        )
+    }
+    
     
     return (
         <Box

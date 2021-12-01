@@ -1,6 +1,6 @@
 // Third party
 import React from 'react';
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline'
@@ -13,7 +13,6 @@ import SinglePostPage from './features/posts/SinglePostPage'
 import EditPostForm from './features/posts/EditPostForm'
 import UsersList from './features/users/UsersList'
 import UserPage from './features/users/UserPage'
-import PageNotFound from './features/shared/PageNotFound'
 import { selectTheme } from './redux/themeSlice'
 
 // Custom theme module. Override default colors, breakpoints etc. to match customer' requirements
@@ -83,9 +82,8 @@ const App = (props) => {
           <Route path="posts/edit/:postId" element={<EditPostForm />} />
           <Route path="users" element={<UsersList />} />
           <Route path="users/view/:userId" element={<UserPage />} />
-          <Route path="*" element={<PageNotFound />} />
+          <Route path='*' element={<Navigate replace to=''/>}/>
         </Route>
-        <Route path="*" element={<PageNotFound />}/>
       </Routes>
     </ThemeProvider>
   );
